@@ -1,0 +1,9 @@
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.AssemblyInfoInputs.cache
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.AssemblyInfo.cs
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.csproj.CoreCompileInputs.cache
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\bin\Debug\netstandard2.0\TMFormat.deps.json
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\bin\Debug\netstandard2.0\TMFormat.dll
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\bin\Debug\netstandard2.0\TMFormat.pdb
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.dll
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.pdb
+C:\Users\AvalonTM\source\repos\TMFormat\TMFormat\obj\Debug\netstandard2.0\TMFormat.csprojAssemblyReference.cache
