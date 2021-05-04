@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using TMFormat;
 using TMFormat.Attributes;
 
 namespace TMFormat.Models
@@ -32,10 +29,12 @@ namespace TMFormat.Models
         public bool Block2 { set; get; }
         public bool Block3 { set; get; }
         public bool Block4 { set; get; }
+
         public bool isTop1 { set; get; }
         public bool isTop2 { set; get; }
         public bool isTop3 { set; get; }
         public bool isTop4 { set; get; }
+
         public bool Use { set; get; }
         public int Field { set; get; }
         public int EffectID { set; get; }
@@ -50,8 +49,10 @@ namespace TMFormat.Models
         public bool isOffset { set; get; }
         public bool isReader { set; get; }
         public bool isEquip { set; get; }
-        public int EquipSloot { set; get; }
-        public Vector3 LightColor { set; get; }
+        public int EquipSlot { set; get; }
+        public ItemColor LightColor { set; get; }
+        public int WeaponDistance { set; get; }
+        public int WeaponValue { set; get; }
         public Vector3 Destine { set; get; }
 
         [NotReader]
@@ -60,7 +61,6 @@ namespace TMFormat.Models
         public int IndexAnimation { set; get; }
         [NotReader]
         public float TimeAnimation { set; get; }
-       
 
         public ItemModel()
         {
@@ -138,7 +138,7 @@ namespace TMFormat.Models
         public static List<ItemModel> Deserialize(byte[] data)
         {
             List<ItemModel> items = new List<ItemModel>();
-            ItemModel item = new ItemModel();
+            ItemModel item = null;
 
             FieldInfo[] fi = typeof(ItemModel).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField);
 
@@ -150,7 +150,7 @@ namespace TMFormat.Models
                     if (Header == "ABO")
                     {
                         int count = reader.ReadInt32(); //Obtenemos el numero de items
-
+                        
                         for (var i = 0; i < count; i++)
                         {
                             item = new ItemModel();
@@ -162,7 +162,8 @@ namespace TMFormat.Models
                                     if (info.FieldType == typeof(Texture2D))
                                     {
                                         int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
-                                        info.SetValue(item, byteArrayToImage(reader.ReadBytes(Length)));
+                                        byte[] bytes = reader.ReadBytes(Length);
+                                        info.SetValue(item, BytesToImage(bytes));
                                     }
 
                                     if (info.FieldType == typeof(string))
@@ -185,26 +186,41 @@ namespace TMFormat.Models
                                         info.SetValue(item, reader.ReadDouble());
                                     }
 
+                                    if (info.FieldType == typeof(ItemColor))
+                                    {
+                                        int r = reader.ReadInt32();
+                                        int g = reader.ReadInt32();
+                                        int b = reader.ReadInt32();
+                                        info.SetValue(item, new ItemColor(r, g, b));
+                                    }
+
                                     if (info.FieldType == typeof(List<ItemTexture>))
                                     {
                                         int _textures = reader.ReadInt32();
-
+                           
                                         for (var t = 0; t < _textures; t++)
                                         {
                                             ItemTexture texture = new ItemTexture();
                                             int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
-                                            texture.Texture1 = byteArrayToImage(reader.ReadBytes(Length));
+                                            byte[] Texture1 = reader.ReadBytes(Length);
+                                            texture.Texture1 = BytesToImage(Texture1);
 
                                             Length = reader.ReadInt32();
-                                            texture.Texture2 = byteArrayToImage(reader.ReadBytes(Length));
+                                            byte[] Texture2 = reader.ReadBytes(Length);
+                                            texture.Texture2 = BytesToImage(Texture2);
 
                                             Length = reader.ReadInt32();
-                                            texture.Texture3 = byteArrayToImage(reader.ReadBytes(Length));
+                                            byte[]  Texture3 = reader.ReadBytes(Length);
+                                            texture.Texture3 = BytesToImage(Texture3);
 
                                             Length = reader.ReadInt32();
-                                            texture.Texture4 = byteArrayToImage(reader.ReadBytes(Length));
+                                            byte[]  Texture4 = reader.ReadBytes(Length);
+                                            texture.Texture4 = BytesToImage(Texture4);
 
-                                            item.Textures.Add(texture);
+                                            if (Instance.Graphics != null)
+                                            {
+                                                item.Textures.Add(texture);
+                                            }
                                         }
                                     }
                                 }
@@ -221,17 +237,54 @@ namespace TMFormat.Models
             return items;
         }
 
-        static Texture2D byteArrayToImage(byte[] byteArrayIn)
+        /*
+        static byte[] imageToByteArray(System.Drawing.Image imageIn)
         {
+            if (imageIn != null)
+            {
+                MemoryStream ms = new MemoryStream();
+                Bitmap bitmap = new Bitmap(imageIn, new Size(32, 32));
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                return ms.ToArray();
+            }
+            return new byte[1];
+        }
+        */
+
+        static Texture2D BytesToImage(byte[] byteArrayIn)
+        {
+            MemoryStream _stream = new MemoryStream();
+
             try
             {
-                MemoryStream ms = new MemoryStream(byteArrayIn);
-                Texture2D returnImage = Texture2D.FromStream(Instance.Graphics, ms);
-                return returnImage;
+                if (Instance.Graphics == null)
+                {
+                    return null;
+                }
+
+                if (byteArrayIn.Length == 0)
+                {
+                    return new Texture2D(Instance.Graphics.GraphicsDevice, 1, 1);
+                }
+
+                using (Image image = Image.Load(byteArrayIn))
+                {
+                    image.SaveAsPng(_stream);
+                }
+
+                if (_stream != null)
+                {
+                    
+                    Texture2D returnImage = Texture2D.FromStream(Instance.Graphics.GraphicsDevice, _stream);
+                    return returnImage;
+                }
+
+                return null;
             }
-            catch
+            catch (Exception ex)
             {
-                return new Texture2D(Instance.Graphics, 1, 1);
+                Console.WriteLine($"[ItemModel] BytesToImage => {ex}");
+                return null;
             }
         }
 

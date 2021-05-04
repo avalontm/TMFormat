@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TMFormat.Maps;
 
 namespace TMFormat.Models
 {
@@ -62,6 +64,8 @@ namespace TMFormat.Models
         public int Heal { set; get; }
         public bool isOffset { set; get; }
         public bool useSpell { set; get; }
+        public int TimeSpawn { set; get; }
+        public bool UseDistance { set; get; }
         public List<CreatureAnimations> Dirs { set; get; }
         public List<CreatureLoot> Loots { set; get; }
 
@@ -109,7 +113,8 @@ namespace TMFormat.Models
                             if (info.FieldType == typeof(Texture2D))
                             {
                                 int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
-                                info.SetValue(item, byteArrayToImage(reader.ReadBytes(Length)));
+                                byte[] bytes =  reader.ReadBytes(Length);
+                                info.SetValue(item, BytesToImage(bytes));
                             }
 
                             if (info.FieldType == typeof(string))
@@ -155,7 +160,8 @@ namespace TMFormat.Models
                                             if (_info.FieldType == typeof(Texture2D))
                                             {
                                                 int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
-                                                _info.SetValue(item.Dirs[i].Animations[a], byteArrayToImage(reader.ReadBytes(Length)));
+                                                byte[] bytes = reader.ReadBytes(Length);
+                                                _info.SetValue(item.Dirs[i].Animations[a], BytesToImage(bytes));
                                             }
                                         }
                                     }
@@ -173,10 +179,23 @@ namespace TMFormat.Models
 
                                     foreach (FieldInfo _info in _fi)
                                     {
-                                        if (_info.FieldType == typeof(int))
+                                        try
                                         {
-                                            int _value = reader.ReadInt32();
-                                            _info.SetValue(item.Loots[i], _value);
+                                            if (_info.FieldType == typeof(int))
+                                            {
+                                                int _value = reader.ReadInt32();
+                                                _info.SetValue(item.Loots[i], _value);
+                                            }
+
+                                            if (_info.FieldType == typeof(double))
+                                            {
+                                                double _value = reader.ReadDouble();
+                                                _info.SetValue(item.Loots[i], _value);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            _info.SetValue(item.Loots[i], 0);
                                         }
                                     }
 
@@ -193,16 +212,38 @@ namespace TMFormat.Models
             return item;
         }
 
-        static Texture2D byteArrayToImage(byte[] byteArrayIn)
+        static Texture2D BytesToImage(byte[] byteArrayIn)
         {
+            MemoryStream _stream = new MemoryStream();
+
             try
             {
-                MemoryStream ms = new MemoryStream(byteArrayIn);
-                Texture2D returnImage = Texture2D.FromStream(Instance.Graphics, ms);
-                return returnImage;
+                if (Instance.Graphics == null)
+                {
+                    return null;
+                }
+
+                if (byteArrayIn.Length == 0)
+                {
+                    return null;
+                }
+
+                using (Image image = Image.Load(byteArrayIn))
+                {
+                    image.SaveAsPng(_stream);
+                }
+
+                if (_stream != null)
+                {
+                    Texture2D returnImage = Texture2D.FromStream(Instance.Graphics.GraphicsDevice, _stream);
+                    return returnImage;
+                }
+
+                return null;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine($"[CreatureModel] BytesToImage => {ex}");
                 return null;
             }
         }

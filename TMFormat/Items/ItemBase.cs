@@ -8,14 +8,30 @@ using TMFormat.Models;
 
 namespace TMFormat.Items
 {
-    public static class Items
+    public static class ItemBase
     {
         public static List<ItemModel> Data = new List<ItemModel>();
 
         public static bool Load(string filename)
         {
-            var readBytes = Instance.Content.Load<byte[]>(filename);
+            byte[] readBytes = new byte[0];
+
+            if (Instance.Content == null)
+            {
+                if (!File.Exists(filename))
+                {
+                    return false;
+                }
+
+                readBytes = File.ReadAllBytes(filename);
+            }
+            else
+            {
+                readBytes = Instance.Content.Load<byte[]>(filename);
+            }
+
             Data = Reader.Deserialize(readBytes);
+
             if (Data != null)
             {
                 return true;
