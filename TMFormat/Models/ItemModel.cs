@@ -217,7 +217,7 @@ namespace TMFormat.Models
                                             byte[]  Texture4 = reader.ReadBytes(Length);
                                             texture.Texture4 = BytesToImage(Texture4);
 
-                                            if (Instance.Graphics != null)
+                                            if (Instance.ShowGrapics)
                                             {
                                                 item.Textures.Add(texture);
                                             }
@@ -257,14 +257,14 @@ namespace TMFormat.Models
 
             try
             {
-                if (Instance.Graphics == null)
+                if (!Instance.ShowGrapics)
                 {
                     return null;
                 }
 
                 if (byteArrayIn.Length == 0)
                 {
-                    return new Texture2D(Instance.Graphics.GraphicsDevice, 1, 1);
+                    return null;
                 }
 
                 using (Image image = Image.Load(byteArrayIn))
@@ -274,7 +274,6 @@ namespace TMFormat.Models
 
                 if (_stream != null)
                 {
-                    
                     Texture2D returnImage = Texture2D.FromStream(Instance.Graphics.GraphicsDevice, _stream);
                     return returnImage;
                 }

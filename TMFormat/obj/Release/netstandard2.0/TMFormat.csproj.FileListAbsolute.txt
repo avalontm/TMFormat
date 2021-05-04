@@ -1,0 +1,8 @@
+D:\GitHub\TMFormat\TMFormat\bin\Release\netstandard2.0\TMFormat.deps.json
+D:\GitHub\TMFormat\TMFormat\bin\Release\netstandard2.0\TMFormat.dll
+D:\GitHub\TMFormat\TMFormat\bin\Release\netstandard2.0\TMFormat.pdb
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.AssemblyInfoInputs.cache
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.AssemblyInfo.cs
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.csproj.CoreCompileInputs.cache
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.dll
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.pdb

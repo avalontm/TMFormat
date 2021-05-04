@@ -43,6 +43,7 @@ namespace TMFormat.Models
 
         }
     }
+
     public class CreatureLoot
     {
         public int id { set; get; }
@@ -161,7 +162,8 @@ namespace TMFormat.Models
                                             {
                                                 int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
                                                 byte[] bytes = reader.ReadBytes(Length);
-                                                _info.SetValue(item.Dirs[i].Animations[a], BytesToImage(bytes));
+                                                Texture2D _texture2D = BytesToImage(bytes);
+                                                _info.SetValue(item.Dirs[i].Animations[a], _texture2D);
                                             }
                                         }
                                     }
@@ -218,7 +220,7 @@ namespace TMFormat.Models
 
             try
             {
-                if (Instance.Graphics == null)
+                if (!Instance.ShowGrapics)
                 {
                     return null;
                 }

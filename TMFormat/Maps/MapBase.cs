@@ -52,7 +52,9 @@ namespace TMFormat.Maps
         public static void Create(int width, int height)
         {
             //Informacion del mapa
-            mapInfo.Size = new Vector2(width, height);
+            mapInfo.Size = new Vector2();
+            mapInfo.Size.X = width;
+            mapInfo.Size.Y = height;
 
             Floors.Clear();
 
