@@ -5,12 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <Compile Remove="Creatures\**" />
+    <EmbeddedResource Remove="Creatures\**" />
+    <None Remove="Creatures\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Creatures\" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
   </ItemGroup>
 
 </Project>

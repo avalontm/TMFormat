@@ -12,7 +12,7 @@ namespace TMFConsole
         static void Main(string[] args)
         {
             Console.WriteLine("Iniciando...");
-            Instance.Init(true);
+            TMInstance.Init(true);
 
             TMCreature creature = TMCreature.Load($"{Path.Combine(root, "chr_128.abochar")}");
 
@@ -21,7 +21,9 @@ namespace TMFConsole
                 Console.WriteLine($"[creature] can't load.");
                 return;
             }
+
             Console.WriteLine($"[creature] {creature.Name}");
+            creature.SaveToImage(creature.Dirs[0].Animations[0].Texture1, Path.Combine(root, "texture_1.png"));
         }
     }
 }

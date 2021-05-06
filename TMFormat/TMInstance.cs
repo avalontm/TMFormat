@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TMFormat
 {
-    public static class Instance
+    public static class TMInstance
     {
         public static bool ShowGrapics { private set; get; }
         public static ContentManager Content { private set; get; }

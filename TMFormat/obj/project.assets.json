@@ -413,28 +413,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Lycaios\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\AvalonTM\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj",
+      "projectUniqueName": "D:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj",
       "projectName": "TMFormat",
-      "projectPath": "E:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj",
-      "packagesPath": "C:\\Users\\Lycaios\\.nuget\\packages\\",
-      "outputPath": "E:\\GitHub\\TMFormat\\TMFormat\\obj\\",
+      "projectPath": "D:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj",
+      "packagesPath": "C:\\Users\\AvalonTM\\.nuget\\packages\\",
+      "outputPath": "D:\\GitHub\\TMFormat\\TMFormat\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\Lycaios\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\AvalonTM\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -443,8 +438,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nugetized.blob.core.windows.net/live-reload/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netstandard2.0": {
