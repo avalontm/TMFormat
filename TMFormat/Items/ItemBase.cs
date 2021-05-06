@@ -16,7 +16,7 @@ namespace TMFormat.Items
         {
             byte[] readBytes = new byte[0];
 
-            if (Instance.Content == null)
+            if (TMInstance.Content == null)
             {
                 if (!File.Exists(filename))
                 {
@@ -27,7 +27,7 @@ namespace TMFormat.Items
             }
             else
             {
-                readBytes = Instance.Content.Load<byte[]>(filename);
+                readBytes = TMInstance.Content.Load<byte[]>(filename);
             }
 
             Data = Reader.Deserialize(readBytes);

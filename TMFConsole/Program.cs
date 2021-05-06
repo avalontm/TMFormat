@@ -12,16 +12,38 @@ namespace TMFConsole
         static void Main(string[] args)
         {
             Console.WriteLine("Iniciando...");
-            Instance.Init(true);
+            TMInstance.Init(true);
 
-            TMCreature creature = TMCreature.Load($"{Path.Combine(root, "chr_128.abochar")}");
+            TMCreature creature = TMCreature.Load($"{Path.Combine(root, "chr_test.tmc")}");
 
             if (creature == null)
             {
                 Console.WriteLine($"[creature] can't load.");
                 return;
             }
-            Console.WriteLine($"[creature] {creature.Name}");
+
+            Console.WriteLine($"[creature] {creature.name}");
+  
+            for (int d = 0; d < creature.dirs.Count; d++)
+            {
+                for (int a = 0; a < creature.dirs[d].textures.Count; a++)
+                {
+                    TMCreature.SaveToImage(creature.dirs[d].textures[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                }
+
+                for (int a = 0; a < creature.dirs[d].masks.Count; a++)
+                {
+                    TMCreature.SaveToImage(creature.dirs[d].masks[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                }
+            }
+
+            if (string.IsNullOrEmpty(creature.name))
+            {
+                creature.name = "creature test";
+            }
+            Console.WriteLine($"[Save] {creature.name}");
+
+            creature.SaveToFile(Path.Combine(root, "chr_test1.tmc"));
         }
     }
 }
