@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,22 +7,18 @@ namespace TMFormat
 {
     public static class TMInstance
     {
-        public static bool ShowGrapics { private set; get; }
+        public static bool UseMonoGame { private set; get; }
         public static ContentManager Content { private set; get; }
-        public static GraphicsDeviceManager Graphics { private set; get; }
 
-        public static void Init(bool useGrapics = false)
+        public static void Init(bool useMonoGame = false)
         {
-            ShowGrapics = useGrapics;
-            Graphics = null;
-            Content = null;
+            UseMonoGame = useMonoGame;
         }
 
-        public static void Init(GraphicsDeviceManager graphics, ContentManager content, bool useGrapics = true)
+        public static void Init(ContentManager content, bool useMonoGame = true)
         {
-            ShowGrapics = useGrapics;
-            Graphics = graphics;
             Content = content;
+            UseMonoGame = useMonoGame;
         }
     }
 }

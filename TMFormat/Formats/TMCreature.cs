@@ -73,7 +73,7 @@ namespace TMFormat.Formats
 
             try
             {
-                if (TMInstance.Content == null)
+                if (!TMInstance.UseMonoGame)
                 {
                     if (!File.Exists(filename))
                     {

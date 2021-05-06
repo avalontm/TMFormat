@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using TMFormat.Attributes;
@@ -12,10 +11,10 @@ namespace TMFormat.Models
 {
     public class ItemTexture
     {
-        public Texture2D Texture1 { set; get; }
-        public Texture2D Texture2 { set; get; }
-        public Texture2D Texture3 { set; get; }
-        public Texture2D Texture4 { set; get; }
+        public byte[] Texture1 { set; get; }
+        public byte[] Texture2 { set; get; }
+        public byte[] Texture3 { set; get; }
+        public byte[] Texture4 { set; get; }
     }
 
     public class ItemModel
@@ -159,11 +158,11 @@ namespace TMFormat.Models
                             {
                                 if (!isNotReader(info))
                                 {
-                                    if (info.FieldType == typeof(Texture2D))
+                                    if (info.FieldType == typeof(byte[]))
                                     {
                                         int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
                                         byte[] bytes = reader.ReadBytes(Length);
-                                        info.SetValue(item, BytesToImage(bytes));
+                                        //info.SetValue(item, BytesToImage(bytes));
                                     }
 
                                     if (info.FieldType == typeof(string))
@@ -203,21 +202,21 @@ namespace TMFormat.Models
                                             ItemTexture texture = new ItemTexture();
                                             int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
                                             byte[] Texture1 = reader.ReadBytes(Length);
-                                            texture.Texture1 = BytesToImage(Texture1);
+                                            //texture.Texture1 = BytesToImage(Texture1);
 
                                             Length = reader.ReadInt32();
                                             byte[] Texture2 = reader.ReadBytes(Length);
-                                            texture.Texture2 = BytesToImage(Texture2);
+                                            //texture.Texture2 = BytesToImage(Texture2);
 
                                             Length = reader.ReadInt32();
                                             byte[]  Texture3 = reader.ReadBytes(Length);
-                                            texture.Texture3 = BytesToImage(Texture3);
+                                            //texture.Texture3 = BytesToImage(Texture3);
 
                                             Length = reader.ReadInt32();
                                             byte[]  Texture4 = reader.ReadBytes(Length);
-                                            texture.Texture4 = BytesToImage(Texture4);
+                                            //texture.Texture4 = BytesToImage(Texture4);
 
-                                            if (TMInstance.ShowGrapics)
+                                            if (TMInstance.UseMonoGame)
                                             {
                                                 item.Textures.Add(texture);
                                             }
@@ -236,56 +235,5 @@ namespace TMFormat.Models
             }
             return items;
         }
-
-        /*
-        static byte[] imageToByteArray(System.Drawing.Image imageIn)
-        {
-            if (imageIn != null)
-            {
-                MemoryStream ms = new MemoryStream();
-                Bitmap bitmap = new Bitmap(imageIn, new Size(32, 32));
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                return ms.ToArray();
-            }
-            return new byte[1];
-        }
-        */
-
-        static Texture2D BytesToImage(byte[] byteArrayIn)
-        {
-            MemoryStream _stream = new MemoryStream();
-
-            try
-            {
-                if (!TMInstance.ShowGrapics)
-                {
-                    return null;
-                }
-
-                if (byteArrayIn.Length == 0)
-                {
-                    return null;
-                }
-
-                using (Image image = Image.Load(byteArrayIn))
-                {
-                    image.SaveAsPng(_stream);
-                }
-
-                if (_stream != null)
-                {
-                    Texture2D returnImage = Texture2D.FromStream(TMInstance.Graphics.GraphicsDevice, _stream);
-                    return returnImage;
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ItemModel] BytesToImage => {ex}");
-                return null;
-            }
-        }
-
     }
 }
