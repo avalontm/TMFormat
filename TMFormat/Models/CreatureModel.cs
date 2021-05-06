@@ -8,97 +8,19 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TMFormat.Formats;
 using TMFormat.Maps;
 
 namespace TMFormat.Models
 {
-    public class CreatureProperties
-    {
-        public Texture2D Texture1 { set; get; }
-        public Texture2D Texture2 { set; get; }
-        public Texture2D Texture3 { set; get; }
-        public Texture2D Texture4 { set; get; }
-
-        public Texture2D Mask1 { set; get; }
-        public Texture2D Mask2 { set; get; }
-        public Texture2D Mask3 { set; get; }
-        public Texture2D Mask4 { set; get; }
-    }
-
-    public class CreatureAnimations
-    {
-        public List<CreatureProperties> Animations { set; get; }
-
-        public CreatureAnimations()
-        {
-            Animations = new List<CreatureProperties>();
-            CreatureProperties anim = new CreatureProperties();
-            Animations.Add(anim);
-
-            anim = new CreatureProperties();
-            Animations.Add(anim);
-
-            anim = new CreatureProperties();
-            Animations.Add(anim);
-
-        }
-    }
-
-    public class CreatureLoot
-    {
-        public int id { set; get; }
-        public int count { set; get; }
-        public int probability { set; get; }
-
-    }
-
-    public class CreatureModel
-    {
-        public string Name { set; get; }
-        public int Type { set; get; }
-        public float Speed { set; get; }
-        public bool isAgressive { set; get; }
-        public int Experience { set; get; }
-        public int Attack { set; get; }
-        public int Defence { set; get; }
-        public int Level { set; get; }
-        public int Heal { set; get; }
-        public bool isOffset { set; get; }
-        public bool useSpell { set; get; }
-        public int TimeSpawn { set; get; }
-        public bool UseDistance { set; get; }
-        public List<CreatureAnimations> Dirs { set; get; }
-        public List<CreatureLoot> Loots { set; get; }
-
-        public CreatureModel()
-        {
-            Dirs = new List<CreatureAnimations>();
-            Loots = new List<CreatureLoot>();
-
-            CreatureAnimations _dir = new CreatureAnimations();
-            Dirs.Add(_dir);
-
-            _dir = new CreatureAnimations();
-            Dirs.Add(_dir);
-
-            _dir = new CreatureAnimations();
-            Dirs.Add(_dir);
-
-            _dir = new CreatureAnimations();
-            Dirs.Add(_dir);
-
-            _dir = new CreatureAnimations();
-            Dirs.Add(_dir);
-        }
-    }
-
     public static class CreatureReader
     {
-        public static CreatureModel Deserialize(byte[] data)
+        public static TMCreature Deserialize(byte[] data)
         {
-            CreatureModel item = new CreatureModel();
+            TMCreature item = new TMCreature();
+            texture_index = 0;
 
-            FieldInfo[] fi = typeof(CreatureModel).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField);
+            FieldInfo[] fi = typeof(TMCreature).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField);
             using (MemoryStream m = new MemoryStream(data))
             {
                 using (BinaryReader reader = new BinaryReader(m))
@@ -106,15 +28,15 @@ namespace TMFormat.Models
                     string Header = Encoding.ASCII.GetString(reader.ReadBytes(3)); //Obtenemos el Header
                     if (Header == "ABO")
                     {
-                        item = new CreatureModel();
+                        item = new TMCreature();
 
                         foreach (FieldInfo info in fi)
                         {
 
-                            if (info.FieldType == typeof(Texture2D))
+                            if (info.FieldType == typeof(byte[]))
                             {
                                 int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
-                                byte[] bytes =  reader.ReadBytes(Length);
+                                byte[] bytes = reader.ReadBytes(Length);
                                 info.SetValue(item, BytesToImage(bytes));
                             }
 
@@ -143,41 +65,41 @@ namespace TMFormat.Models
                                 info.SetValue(item, reader.ReadSingle());
                             }
 
-                            if (info.FieldType == typeof(CreatureAnimations))
+                            if (info.FieldType == typeof(TMCreatureAnimations))
                             {
                                 info.SetValue(item, reader.ReadDouble());
                             }
 
-                            if (info.FieldType == typeof(List<CreatureAnimations>))
+                            if (info.FieldType == typeof(List<TMCreatureAnimations>))
                             {
                                 for (var i = 0; i < item.Dirs.Count; i++)
                                 {
                                     for (var a = 0; a < item.Dirs[i].Animations.Count; a++)
                                     {
-                                        FieldInfo[] _fi = typeof(CreatureProperties).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                                        FieldInfo[] _fi = typeof(TMCreatureAnimations).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
                                         foreach (FieldInfo _info in _fi)
                                         {
-                                            if (_info.FieldType == typeof(Texture2D))
+                                            if (_info.FieldType == typeof(byte[]))
                                             {
                                                 int Length = reader.ReadInt32(); //Obtenemos lo largo en bytes de la textura.
                                                 byte[] bytes = reader.ReadBytes(Length);
-                                                Texture2D _texture2D = BytesToImage(bytes);
-                                                _info.SetValue(item.Dirs[i].Animations[a], _texture2D);
+                                                byte[] _texture = BytesToImage(bytes);
+                                                _info.SetValue(item.Dirs[i].Animations[a], _texture);
                                             }
                                         }
                                     }
                                 }
                             }
 
-                            if (info.FieldType == typeof(List<CreatureLoot>))
+                            if (info.FieldType == typeof(List<TMCreatureLoot>))
                             {
                                 int _loots = reader.ReadInt32();
 
                                 for (var i = 0; i < _loots; i++)
                                 {
-                                    item.Loots.Add(new CreatureLoot());
-                                    FieldInfo[] _fi = typeof(CreatureLoot).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                                    item.Loots.Add(new TMCreatureLoot());
+                                    FieldInfo[] _fi = typeof(TMCreatureLoot).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
                                     foreach (FieldInfo _info in _fi)
                                     {
@@ -214,42 +136,25 @@ namespace TMFormat.Models
             return item;
         }
 
-        static Texture2D BytesToImage(byte[] byteArrayIn)
+        static int texture_index = 0;
+        static byte[] BytesToImage(byte[] byteArrayIn)
         {
-            MemoryStream _stream = new MemoryStream();
-
-            try
+            Console.WriteLine("[BytesToImage]");
+            using (Image image = Image.Load(byteArrayIn))
             {
-                if (!Instance.ShowGrapics)
+                string root = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "textures");
+
+                if (!Directory.Exists(root))
                 {
-                    return null;
+                    Directory.CreateDirectory(root);
                 }
 
-                if (byteArrayIn.Length == 0)
-                {
-                    return null;
-                }
-
-                using (Image image = Image.Load(byteArrayIn))
-                {
-                    image.SaveAsPng(_stream);
-                }
-
-                if (_stream != null)
-                {
-                    Texture2D returnImage = Texture2D.FromStream(Instance.Graphics.GraphicsDevice, _stream);
-                    return returnImage;
-                }
-
-                return null;
+                image.SaveAsPng(Path.Combine(root, $"texture_{texture_index}.png"));
+                texture_index++;
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine($"[CreatureModel] BytesToImage => {ex}");
-                return null;
-            }
+
+            return byteArrayIn;
         }
 
     }
-
 }
