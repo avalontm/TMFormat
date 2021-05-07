@@ -2,6 +2,7 @@
 using System.IO;
 using TMFormat;
 using TMFormat.Formats;
+using TMFormat.Helpers;
 using TMFormat.Models;
 
 namespace TMFConsole
@@ -12,7 +13,7 @@ namespace TMFConsole
         static void Main(string[] args)
         {
             Console.WriteLine("Iniciando...");
-            TMInstance.Init(true);
+            TMInstance.Init();
 
             TMCreature creature = TMCreature.Load($"{Path.Combine(root, "chr_test.tmc")}");
 
@@ -24,16 +25,20 @@ namespace TMFConsole
 
             Console.WriteLine($"[creature] {creature.name}");
   
+
             for (int d = 0; d < creature.dirs.Count; d++)
             {
-                for (int a = 0; a < creature.dirs[d].textures.Count; a++)
+                for (int s = 0; s < creature.dirs[d].sprites.Count; s++)
                 {
-                    TMCreature.SaveToImage(creature.dirs[d].textures[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
-                }
+                    for (int a = 0; a < creature.dirs[d].sprites[s].textures.Count; a++)
+                    {
+                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].textures[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                    }
 
-                for (int a = 0; a < creature.dirs[d].masks.Count; a++)
-                {
-                    TMCreature.SaveToImage(creature.dirs[d].masks[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                    for (int a = 0; a < creature.dirs[d].sprites[s].masks.Count; a++)
+                    {
+                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].masks[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                    }
                 }
             }
 

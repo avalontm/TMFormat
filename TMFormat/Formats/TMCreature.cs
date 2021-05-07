@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using TMFormat.Helpers;
 using TMFormat.Models;
 
 namespace TMFormat.Formats
@@ -25,10 +26,35 @@ namespace TMFormat.Formats
         {
             textures = new List<byte[]>();
             masks = new List<byte[]>();
+
+            textures.Add(new byte[0]);
+            textures.Add(new byte[0]);
+            textures.Add(new byte[0]);
+            textures.Add(new byte[0]);
+
+            masks.Add(new byte[0]);
+            masks.Add(new byte[0]);
+            masks.Add(new byte[0]);
+            masks.Add(new byte[0]);
+
         }
     }
 
-    public class TMCreature
+    public class TMCreatureAnimation
+    {
+        public List<TMCreatureTexture> sprites { set; get; }
+
+        public TMCreatureAnimation()
+        {
+            sprites = new List<TMCreatureTexture>();
+
+            sprites.Add(new TMCreatureTexture());
+            sprites.Add(new TMCreatureTexture());
+            sprites.Add(new TMCreatureTexture());
+        }
+    }
+
+    public class TMCreature : ObservableObject
     {
         public string name { set; get; }
         public int type { set; get; }
@@ -43,28 +69,19 @@ namespace TMFormat.Formats
         public bool use_spell { set; get; }
         public int timespawn { set; get; }
         public bool use_distance { set; get; }
-        public List<TMCreatureTexture> dirs { set; get; }
+        public List<TMCreatureAnimation> dirs { set; get; }
         public List<TMCreatureLoot> loots { set; get; }
 
         public TMCreature()
         {
-            dirs = new List<TMCreatureTexture>();
+            dirs = new List<TMCreatureAnimation>();
             loots = new List<TMCreatureLoot>();
 
-            TMCreatureTexture _dir = new TMCreatureTexture();
-            dirs.Add(_dir);
-
-            _dir = new TMCreatureTexture();
-            dirs.Add(_dir);
-
-            _dir = new TMCreatureTexture();
-            dirs.Add(_dir);
-
-            _dir = new TMCreatureTexture();
-            dirs.Add(_dir);
-
-            _dir = new TMCreatureTexture();
-            dirs.Add(_dir);
+            dirs.Add(new TMCreatureAnimation());
+            dirs.Add(new TMCreatureAnimation());
+            dirs.Add(new TMCreatureAnimation());
+            dirs.Add(new TMCreatureAnimation());
+            dirs.Add(new TMCreatureAnimation());
         }
 
         public static TMCreature Load(string filename)
@@ -109,7 +126,7 @@ namespace TMFormat.Formats
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TMCreature] [LOAD] => {ex}");
+                Console.WriteLine($"[TMCreature] [SAVE] => {ex}");
                 return false;
             }
         }
@@ -128,7 +145,7 @@ namespace TMFormat.Formats
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TMCreature] [LOAD] => {ex}");
+                Console.WriteLine($"[TMCreature] [SAVE] => {ex}");
                 return false;
             }
         }
@@ -173,26 +190,29 @@ namespace TMFormat.Formats
                                 info.SetValue(item, reader.ReadSingle());
                             }
 
-                            if (info.FieldType == typeof(List<TMCreatureTexture>))
+                            if (info.FieldType == typeof(List<TMCreatureAnimation>))
                             {
-                                int _counts = reader.ReadInt32();
+                                int _dirs = reader.ReadInt32();
 
-                                for (var i = 0; i < item.dirs.Count; i++)
+                                for (var d = 0; d < _dirs; d++) //Dirs
                                 {
-                                    //Texturas
-                                    for (var a = 0; a < 4; a++)
+                                    for (var s = 0; s < item.dirs[d].sprites.Count; s++) //Sprites
                                     {
-                                        int Length = reader.ReadInt32(); 
-                                        byte[] bytes = reader.ReadBytes(Length);
-                                        item.dirs[i].textures.Add(bytes);
-                                    }
+                                        //Texturas
+                                        for (var i = 0; i < 4; i++)
+                                        {
+                                            int Length = reader.ReadInt32();
+                                            byte[] bytes = reader.ReadBytes(Length);
+                                            item.dirs[d].sprites[s].textures[i] = bytes;
+                                        }
 
-                                    //Mascaras
-                                    for (var a = 0; a < 4; a++)
-                                    {
-                                        int Length = reader.ReadInt32(); 
-                                        byte[] bytes = reader.ReadBytes(Length);
-                                        item.dirs[i].masks.Add(bytes);
+                                        //Mascaras
+                                        for (var i = 0; i < 4; i++)
+                                        {
+                                            int Length = reader.ReadInt32();
+                                            byte[] bytes = reader.ReadBytes(Length);
+                                            item.dirs[d].sprites[s].masks[i] = bytes;
+                                        }
                                     }
                                 }
                             }
@@ -227,7 +247,6 @@ namespace TMFormat.Formats
                                             _info.SetValue(item.loots[i], 0);
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -315,32 +334,63 @@ namespace TMFormat.Formats
                             }
                         }
 
-                        if (info.FieldType == typeof(List<TMCreatureTexture>))
+                        if (info.FieldType == typeof(List<TMCreatureAnimation>))
                         {
-                            info.GetValue(item);
-
                             writer.Write(item.dirs.Count);
 
-                            foreach (TMCreatureTexture dir in item.dirs)
+                            for (var d = 0; d < item.dirs.Count; d++)
                             {
-                                foreach (byte[] bytes in dir.textures)
+                                foreach (TMCreatureTexture sprite in item.dirs[d].sprites)
                                 {
-                                    writer.Write(bytes.Length);
-                                    writer.Write(bytes);
-                                }
+                                    foreach (byte[] bytes in sprite.textures)
+                                    {
+                                        try
+                                        {
+                                            if (bytes != null)
+                                            {
+                                                writer.Write(bytes.Length);
+                                                writer.Write(bytes);
+                                            }
+                                            else
+                                            {
+                                                writer.Write(0);
+                                                writer.Write(new byte[0]);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            writer.Write(0);
+                                            writer.Write(new byte[0]);
+                                        }
+                                    }
 
-                                foreach (byte[] bytes in dir.masks)
-                                {
-                                    writer.Write(bytes.Length);
-                                    writer.Write(bytes);
+                                    foreach (byte[] bytes in sprite.masks)
+                                    {
+                                        try
+                                        {
+                                            if (bytes != null)
+                                            {
+                                                writer.Write(bytes.Length);
+                                                writer.Write(bytes);
+                                            }
+                                            else
+                                            {
+                                                writer.Write(0);
+                                                writer.Write(new byte[0]);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            writer.Write(0);
+                                            writer.Write(new byte[0]);
+                                        }
+                                    }
                                 }
                             }
                         }
 
                         if (info.FieldType == typeof(List<TMCreatureLoot>))
                         {
-                            info.GetValue(item);
-
                             writer.Write(item.loots.Count);
 
                             foreach (TMCreatureLoot loot in item.loots)
@@ -379,23 +429,6 @@ namespace TMFormat.Formats
                     }
                 }
                 return m.ToArray();
-            }
-        }
-
-        public static bool SaveToImage(byte[] bytes, string file)
-        {
-            try
-            {
-                using (Image image = Image.Load(bytes))
-                {
-                    image.SaveAsPng($"{file}.png");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[SaveToImage] {ex}");
-                return false;
             }
         }
 
