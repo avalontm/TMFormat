@@ -86,23 +86,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\AvalonTM\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\Lycaios\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GitHub\\TMFormat\\TMFConsole\\TMFConsole.csproj",
+      "projectUniqueName": "E:\\GitHub\\TMFormat\\TMFConsole\\TMFConsole.csproj",
       "projectName": "TMFConsole",
-      "projectPath": "D:\\GitHub\\TMFormat\\TMFConsole\\TMFConsole.csproj",
-      "packagesPath": "C:\\Users\\AvalonTM\\.nuget\\packages\\",
-      "outputPath": "D:\\GitHub\\TMFormat\\TMFConsole\\obj\\",
+      "projectPath": "E:\\GitHub\\TMFormat\\TMFConsole\\TMFConsole.csproj",
+      "packagesPath": "C:\\Users\\Lycaios\\.nuget\\packages\\",
+      "outputPath": "E:\\GitHub\\TMFormat\\TMFConsole\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\AvalonTM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Lycaios\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -111,14 +116,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nugetized.blob.core.windows.net/live-reload/index.json": {}
       },
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj": {
-              "projectPath": "D:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj"
+            "E:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj": {
+              "projectPath": "E:\\GitHub\\TMFormat\\TMFormat\\TMFormat.csproj"
             }
           }
         }

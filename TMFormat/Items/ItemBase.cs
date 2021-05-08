@@ -16,7 +16,7 @@ namespace TMFormat.Items
         {
             byte[] readBytes = new byte[0];
 
-            if (TMInstance.Content == null)
+            if (!TMInstance.UseMonoGame)
             {
                 if (!File.Exists(filename))
                 {
