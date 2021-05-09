@@ -4,52 +4,32 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using TMFormat.Items;
+using TMFormat.Enums;
+using TMFormat.Formats;
 using TMFormat.Models;
 
-namespace TMFormat.Maps
+namespace TMFormat.Formats
 {
-    public struct TilePlayer
-    {
-        public bool Send;
-    }
-
-    public struct MapInfo
-    {
-        public string Name;
-        public Vector2 Size;
-        public string Version;
-        public string Autor;
-    }
-
-    public struct MapProperties
-    {
-        public bool isCreature;
-        public bool isPZ;
-        public bool isTop;
-        public ItemModel item;
-        public List<ItemModel> items;
-    }
-
-
-    public static class MapBase
+    public class TMBaseMap : IDisposable
     {
         static string dirData;
         public static readonly int total_floors = 15;
         public static readonly int TileSize = 32;
 
         //Variables Publicas
-        public static MapInfo mapInfo = new MapInfo();
+        public MapInfo mapInfo = new MapInfo();
 
         // MAP LISTS
-        public static List<MapProperties[,]> Floors = new List<MapProperties[,]>();
+        public List<MapProperties[,]> Floors = new List<MapProperties[,]>();
+        List<TMItem> Items = new List<TMItem>();
 
-        public static void Init(string data_dir)
+        public TMBaseMap(List<TMItem> items, string data_dir)
         {
             dirData = data_dir;
+            Items = items;
         }
 
-        public static void Create(int width, int height)
+        public void Create(int width, int height)
         {
             //Informacion del mapa
             mapInfo.Size = new Vector2();
@@ -69,7 +49,7 @@ namespace TMFormat.Maps
         /* READ Map*/
         /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-        public static bool Load(string name)
+        public bool Load(string name)
         {
             int width = 0;
             int height = 0;
@@ -119,8 +99,8 @@ namespace TMFormat.Maps
                         int z = reader.ReadInt32();
                         int items_count = reader.ReadInt32();
                       
-                        var real_item = ItemBase.Data.Where(itm => itm.Id == tile_id).FirstOrDefault();
-                        ItemModel item = new ItemModel();
+                        var real_item = Items.Where(itm => itm.Id == tile_id).FirstOrDefault();
+                        TMItem item = new TMItem();
                         item.Copy(real_item);
                       
                         Floors[z][x, y].item = item;
@@ -134,8 +114,8 @@ namespace TMFormat.Maps
                             int destineZ = reader.ReadInt32();
                             string message = reader.ReadString();
 
-                            real_item = ItemBase.Data.Where(itm => itm.Id == item_id).FirstOrDefault();
-                            ItemModel _item = new ItemModel();
+                            real_item = Items.Where(itm => itm.Id == item_id).FirstOrDefault();
+                            TMItem _item = new TMItem();
                             _item.Copy(real_item);
 
                             _item.Destine = new Vector3(destineX, destineY, destineZ);
@@ -143,7 +123,7 @@ namespace TMFormat.Maps
 
                             if (Floors[z][x, y].items == null)
                             {
-                                Floors[z][x, y].items = new List<ItemModel>();
+                                Floors[z][x, y].items = new List<TMItem>();
                             }
                             Floors[z][x, y].items.Add(_item);
                         }
@@ -161,8 +141,10 @@ namespace TMFormat.Maps
             }
         }
 
-
+        public void Dispose()
+        {
+            Floors = null;
+            Items = null;
+        }
     } //FIN
-
-
 }
