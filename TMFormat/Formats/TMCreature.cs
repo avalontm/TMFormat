@@ -67,8 +67,10 @@ namespace TMFormat.Formats
         public int heal { set; get; }
         public bool is_offset { set; get; }
         public bool use_spell { set; get; }
+        public int spell_type { set; get; }
         public int timespawn { set; get; }
         public bool use_distance { set; get; }
+        public int distance_tiles { set; get; }
         public List<TMCreatureAnimation> dirs { set; get; }
         public List<TMCreatureLoot> loots { set; get; }
 
