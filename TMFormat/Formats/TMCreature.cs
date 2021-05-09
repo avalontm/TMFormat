@@ -58,7 +58,7 @@ namespace TMFormat.Formats
     {
         public string name { set; get; }
         public int type { set; get; }
-        public float speed { set; get; }
+        public double speed { set; get; }
         public bool is_agressive { set; get; }
         public int experience { set; get; }
         public int attack { set; get; }
