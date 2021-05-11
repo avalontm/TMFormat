@@ -12,7 +12,6 @@ namespace TMFormat.Formats
 {
     public class TMBaseMap : IDisposable
     {
-        static string dirData;
         public static readonly int total_floors = 15;
         public static readonly int TileSize = 32;
 
@@ -21,11 +20,10 @@ namespace TMFormat.Formats
 
         // MAP LISTS
         public List<MapProperties[,]> Floors = new List<MapProperties[,]>();
-        List<TMItem> Items = new List<TMItem>();
+        List<TMSprite> Items = new List<TMSprite>();
 
-        public TMBaseMap(List<TMItem> items, string data_dir)
+        public TMBaseMap(List<TMSprite> items)
         {
-            dirData = data_dir;
             Items = items;
         }
 
@@ -49,18 +47,18 @@ namespace TMFormat.Formats
         /* READ Map*/
         /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-        public bool Load(string name)
+        public bool Load(string fileMap)
         {
             int width = 0;
             int height = 0;
 
-            if (string.IsNullOrEmpty(dirData))
+            if (string.IsNullOrEmpty(fileMap))
             {
                 Console.WriteLine($"[MapBase] Load => Not Root Directory.");
                 return false;
             }
 
-            string filename = Path.Combine(dirData, "maps", $"{name}.abomap");
+            string filename = fileMap;
 
             if (!File.Exists(filename))
             {
@@ -100,7 +98,7 @@ namespace TMFormat.Formats
                         int items_count = reader.ReadInt32();
                       
                         var real_item = Items.Where(itm => itm.Id == tile_id).FirstOrDefault();
-                        TMItem item = new TMItem();
+                        TMSprite item = new TMSprite();
                         item.Copy(real_item);
                       
                         Floors[z][x, y].item = item;
@@ -115,7 +113,7 @@ namespace TMFormat.Formats
                             string message = reader.ReadString();
 
                             real_item = Items.Where(itm => itm.Id == item_id).FirstOrDefault();
-                            TMItem _item = new TMItem();
+                            TMSprite _item = new TMSprite();
                             _item.Copy(real_item);
 
                             _item.Destine = new Vector3(destineX, destineY, destineZ);
@@ -123,7 +121,7 @@ namespace TMFormat.Formats
 
                             if (Floors[z][x, y].items == null)
                             {
-                                Floors[z][x, y].items = new List<TMItem>();
+                                Floors[z][x, y].items = new List<TMSprite>();
                             }
                             Floors[z][x, y].items.Add(_item);
                         }
@@ -146,5 +144,6 @@ namespace TMFormat.Formats
             Floors = null;
             Items = null;
         }
+
     } //FIN
 }

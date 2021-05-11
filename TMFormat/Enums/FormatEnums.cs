@@ -51,7 +51,7 @@ namespace TMFormat.Enums
         public bool isCreature;
         public bool isPZ;
         public bool isTop;
-        public TMItem item;
-        public List<TMItem> items;
+        public TMSprite item;
+        public List<TMSprite> items;
     }
 }

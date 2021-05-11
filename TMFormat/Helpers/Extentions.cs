@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using TMFormat.Attributes;
@@ -31,6 +33,19 @@ namespace TMFormat.Helpers
             }
 
             return notReader;
+        }
+
+        public static List<TMSprite> ToSprites(this List<TMItem> items)
+        {
+            List<TMSprite> sprites = new List<TMSprite>();
+
+            foreach (var item in items)
+            {
+                TMSprite spr = new TMSprite();
+                spr.Copy(item);
+                sprites.Add(spr);
+            }
+            return sprites;
         }
     }
 }
