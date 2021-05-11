@@ -15,7 +15,7 @@ namespace TMFConsole
             Console.WriteLine("Iniciando...");
             TMInstance.Init();
 
-            TMCreature creature = TMCreature.Load($"{Path.Combine(root, "chr_test.tmc")}");
+            TMCreature creature = TMCreature.Load($"{Path.Combine(root, "orc.tmc")}");
 
             if (creature == null)
             {
@@ -24,20 +24,19 @@ namespace TMFConsole
             }
 
             Console.WriteLine($"[creature] {creature.name}");
-  
 
             for (int d = 0; d < creature.dirs.Count; d++)
             {
                 for (int s = 0; s < creature.dirs[d].sprites.Count; s++)
                 {
-                    for (int a = 0; a < creature.dirs[d].sprites[s].textures.Count; a++)
+                    for (int i = 0; i < 4; i++)
                     {
-                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].textures[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].textures[i], Path.Combine(root, "textures", $"text_{d}_{s}_{i}"));
                     }
 
-                    for (int a = 0; a < creature.dirs[d].sprites[s].masks.Count; a++)
+                    for (int a = 0; a < 4; a++)
                     {
-                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].masks[a], Path.Combine(root, "textures", $"text_dir_{d}_{a}"));
+                        TMImageHelper.SaveToImage(creature.dirs[d].sprites[s].masks[a], Path.Combine(root, "textures", $"text_{d}_{a}"));
                     }
                 }
             }
@@ -48,7 +47,7 @@ namespace TMFConsole
             }
             Console.WriteLine($"[Save] {creature.name}");
 
-            creature.SaveToFile(Path.Combine(root, "chr_test1.tmc"));
+            creature.SaveToFile(Path.Combine(root, "chr_orc.tmc"));
         }
     }
 }

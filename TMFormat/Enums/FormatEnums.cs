@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
+using TMFormat.Formats;
 
 namespace TMFormat.Enums
 {
@@ -29,5 +31,27 @@ namespace TMFormat.Enums
         Wall,
         Stair,
         Door,
+    }
+
+    public struct TilePlayer
+    {
+        public bool Send;
+    }
+
+    public struct MapInfo
+    {
+        public string Name;
+        public Vector2 Size;
+        public string Version;
+        public string Autor;
+    }
+
+    public struct MapProperties
+    {
+        public bool isCreature;
+        public bool isPZ;
+        public bool isTop;
+        public TMSprite item;
+        public List<TMSprite> items;
     }
 }

@@ -1,11 +1,13 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace TMFormat.Helpers
@@ -14,14 +16,15 @@ namespace TMFormat.Helpers
     {
         static int TileSize = 32;
 
-        public static byte[] FromFile(string file)
+        public static byte[] FromFile(string file, bool transparent)
         {
-            Stream outputStream = new MemoryStream();
+            MemoryStream outputStream = new MemoryStream();
 
             try
             {
                 using (Image image = Image.Load(file))
                 {
+            
                     if (image.Width != TileSize || image.Height != TileSize)
                     {
                         image.Mutate(i => i.Resize(TileSize, TileSize));
@@ -29,11 +32,12 @@ namespace TMFormat.Helpers
 
                     image.Save(outputStream, new PngEncoder());
 
-                    using (MemoryStream ms = new MemoryStream())
+                    if (transparent)
                     {
-                        outputStream.CopyTo(ms);
-                        return ms.ToArray();
+                       return ToReplacePixels(outputStream.ToArray());
                     }
+
+                    return outputStream.ToArray();
                 }
             }
             catch (Exception ex)
@@ -45,7 +49,7 @@ namespace TMFormat.Helpers
 
         public static byte[] ToBytes(Stream stream)
         {
-            Stream outputStream = new MemoryStream();
+            MemoryStream outputStream = new MemoryStream();
 
             try
             {
@@ -58,11 +62,8 @@ namespace TMFormat.Helpers
                   
                     image.SaveAsPng(outputStream, new PngEncoder());
 
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        outputStream.CopyTo(ms);
-                        return ms.ToArray();
-                    }
+                    return outputStream.ToArray();
+
                 }
             }
             catch(Exception ex)
@@ -76,9 +77,18 @@ namespace TMFormat.Helpers
         {
             try
             {
+                if (string.IsNullOrEmpty(file))
+                {
+                    Console.WriteLine($"[SaveToImage] File rute is empty.");
+                    return false;
+                }
+                if (bytes == null || bytes.Length == 0)
+                {
+                    return false;
+                }
                 using (Image image = Image.Load(bytes))
                 {
-                    image.Save($"{file}.png");
+                    image.Save($"{file}.png", new PngEncoder());
                     return true;
                 }
             }
@@ -89,5 +99,32 @@ namespace TMFormat.Helpers
             }
         }
 
+
+        public static byte[] ToReplacePixels(byte[] bytes)
+        {
+            Rgba32 color = new Rgba32(255, 0, 255);
+            Rgba32 replace = new Rgba32(0, 0, 0, 0);
+            MemoryStream outputStream = new MemoryStream();
+
+            using (Image<Rgba32> image = Image.Load(bytes))
+            {
+                for (int y = 0; y < image.Height; y++)
+                {
+                    for (int x = 0; x < image.Width; x++)
+                    {
+                        var pixel = image[x, y];
+                        if (pixel == color)
+                        {
+                            image[x, y] = replace;
+                        }
+                    }
+                }
+
+                image.SaveAsPng(outputStream, new PngEncoder());
+
+                return outputStream.ToArray();
+            }
+ 
+        }
     }
 }
