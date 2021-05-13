@@ -71,7 +71,7 @@ namespace TMFormat.Formats
             {
                 try
                 {
-                    if (reader.ReadString() != "ABO")
+                    if (reader.ReadString() != "TMAP")
                     {
                         return false;
                     }
@@ -136,6 +136,91 @@ namespace TMFormat.Formats
                     reader.Close();
                     return false;
                 }
+            }
+        }
+
+        public bool Save(string fileName)
+        {
+            int width = (int)mapInfo.Size.X;
+            int height = (int)mapInfo.Size.Y;
+            List<TMTileMap> tiles = new List<TMTileMap>();
+
+            FileStream writeStream = new FileStream(fileName, FileMode.Create);
+
+            using (BinaryWriter writer = new BinaryWriter(writeStream))
+            {
+                writer.Write("TMAP");
+                writer.Write(mapInfo.Name);
+                writer.Write(mapInfo.Version);
+                writer.Write(mapInfo.Autor);
+
+                writer.Write(width);
+                writer.Write(height);
+
+                //Escribir Tiles del Mapa.
+
+                for (int y = 0; y < (int)mapInfo.Size.Y; y++)
+                {
+                    for (int x = 0; x < (int)mapInfo.Size.X; x++)
+                    {
+                        for (int f = 0; f < total_floors; f++)
+                        {
+                            if (Floors[f][x, y].item != null)
+                            {
+                                TMTileMap tile = new TMTileMap();
+
+                                tile.pz = Floors[f][x, y].isPZ;
+                                tile.type = Floors[f][x, y].item.Type;
+                                tile.id = Floors[f][x, y].item.Id;
+                                tile.x = x;
+                                tile.y = y;
+                                tile.z = f;
+
+                                if (Floors[f][x, y].items != null)
+                                {
+                                    foreach (var item in Floors[f][x, y].items)
+                                    {
+                                        TMItemMap _item = new TMItemMap();
+                                        _item.id = item.Id;
+                                        _item.teleporX = (int)item.Destine.X;
+                                        _item.teleporY = (int)item.Destine.Y;
+                                        _item.teleporZ = (int)item.Destine.Z;
+                                        _item.message = item.Reader ?? string.Empty;
+
+                                        tile.items.Add(_item);
+                                    }
+                                }
+
+                                tiles.Add(tile);
+                            }
+                        }
+
+                    }
+                }
+
+                writer.Write(tiles.Count);
+
+                foreach (var tile in tiles)
+                {
+                    writer.Write(tile.pz);
+                    writer.Write(tile.id);
+                    writer.Write(tile.x);
+                    writer.Write(tile.y);
+                    writer.Write(tile.z);
+
+                    writer.Write(tile.items.Count);
+
+                    foreach (var item in tile.items)
+                    {
+                        writer.Write(item.id);
+                        writer.Write(item.teleporX);
+                        writer.Write(item.teleporY);
+                        writer.Write(item.teleporZ);
+                        writer.Write(item.message);
+                    }
+                }
+
+                return true;
             }
         }
 
