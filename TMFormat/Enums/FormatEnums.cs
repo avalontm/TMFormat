@@ -33,6 +33,13 @@ namespace TMFormat.Enums
         Door,
     }
 
+    public enum TypeField
+    {
+        None = 0,
+        Fire,
+        Teleport,
+    }
+
     public struct TilePlayer
     {
         public bool Send;
