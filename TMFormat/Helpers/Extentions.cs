@@ -35,6 +35,24 @@ namespace TMFormat.Helpers
             return notReader;
         }
 
+        public static Texture2D ToTexture2D(this byte[] buffer)
+        {
+            if (TMInstance.GraphicsDevice == null)
+            {
+                return null;
+            }
+
+            if (buffer == null || buffer.Length == 0)
+            {
+                return new Texture2D(TMInstance.GraphicsDevice, 32, 32);
+            }
+
+            using (MemoryStream memStream = new MemoryStream(buffer))
+            {
+                return Texture2D.FromStream(TMInstance.GraphicsDevice, memStream);
+            }
+        }
+
         public static List<TMSprite> ToSprites(this List<TMItem> items)
         {
             List<TMSprite> sprites = new List<TMSprite>();
@@ -43,6 +61,11 @@ namespace TMFormat.Helpers
             {
                 TMSprite spr = new TMSprite();
                 spr.Copy(item);
+                foreach (var _sprite in item.Textures)
+                {
+                    spr.Sprites.Add(new TMSpriteTexture() { Sprite1 = _sprite.Texture1.ToTexture2D(), Sprite2 = _sprite.Texture2.ToTexture2D(),  Sprite3 = _sprite.Texture3.ToTexture2D(), Sprite4  = _sprite.Texture4.ToTexture2D() });
+
+                }
                 sprites.Add(spr);
             }
             return sprites;
