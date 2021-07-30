@@ -44,7 +44,7 @@ namespace TMFormat.Helpers
 
             if (buffer == null || buffer.Length == 0)
             {
-                return new Texture2D(TMInstance.GraphicsDevice, 32, 32);
+                return null;
             }
 
             using (MemoryStream memStream = new MemoryStream(buffer))
