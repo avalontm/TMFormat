@@ -15,3 +15,5 @@ E:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.AssemblyInfo.cs
 E:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.csproj.CoreCompileInputs.cache
 E:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.dll
 E:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.pdb
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.csproj.AssemblyReference.cache
+D:\GitHub\TMFormat\TMFormat\obj\Release\netstandard2.0\TMFormat.GeneratedMSBuildEditorConfig.editorconfig

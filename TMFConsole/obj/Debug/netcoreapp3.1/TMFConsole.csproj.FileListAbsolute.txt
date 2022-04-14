@@ -26,7 +26,6 @@ D:\GitHub\TMFormat\TMFConsole\bin\Debug\netcoreapp3.1\MonoGame.Framework.dll
 D:\GitHub\TMFormat\TMFConsole\bin\Debug\netcoreapp3.1\SixLabors.ImageSharp.dll
 D:\GitHub\TMFormat\TMFConsole\bin\Debug\netcoreapp3.1\TMFormat.dll
 D:\GitHub\TMFormat\TMFConsole\bin\Debug\netcoreapp3.1\TMFormat.pdb
-D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.csprojAssemblyReference.cache
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.AssemblyInfoInputs.cache
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.AssemblyInfo.cs
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.csproj.CoreCompileInputs.cache
@@ -34,3 +33,5 @@ D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.csproj.CopyComp
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.dll
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.pdb
 D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.genruntimeconfig.cache
+D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.csproj.AssemblyReference.cache
+D:\GitHub\TMFormat\TMFConsole\obj\Debug\netcoreapp3.1\TMFConsole.GeneratedMSBuildEditorConfig.editorconfig

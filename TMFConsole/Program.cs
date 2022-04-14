@@ -15,7 +15,7 @@ namespace TMFConsole
             Console.WriteLine("Iniciando...");
             TMInstance.Init();
 
-            TMCreature creature = TMCreature.Load($"{Path.Combine(root, "orc.tmc")}");
+            ABOCreature creature = ABOCreature.Load($"{Path.Combine(root, "chr_12.abochar")}");
 
             if (creature == null)
             {
@@ -47,7 +47,7 @@ namespace TMFConsole
             }
             Console.WriteLine($"[Save] {creature.name}");
 
-            creature.SaveToFile(Path.Combine(root, "chr_orc.tmc"));
+           // creature.SaveToFile(Path.Combine(root, "chr_orc.tmc"));
         }
     }
 }

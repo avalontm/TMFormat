@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ygtVyVIovx9HWGLykP39X0FHeLzdm3M658wzFKexs435i8eU71YBC2Rg3tb8SCaV/zAQe+l8iJHn/+jha0gvSQ==",
+  "dgSpecHash": "0DHpNSjkoPTrbcmy+GMAE+JGt3xlhhOKZEvDcwWwK9F0apqcRr6qqShjE9pDU5y64x45SlNesm6FEWcM70RWnA==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\TMFormat\\TMFConsole\\TMFConsole.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\AvalonTM\\.nuget\\packages\\monogame.framework.portable\\3.7.1.189\\monogame.framework.portable.3.7.1.189.nupkg.sha512",
-    "C:\\Users\\AvalonTM\\.nuget\\packages\\sixlabors.imagesharp\\1.0.3\\sixlabors.imagesharp.1.0.3.nupkg.sha512"
+    "C:\\Users\\AvalonTM\\.nuget\\packages\\sixlabors.imagesharp\\1.0.3\\sixlabors.imagesharp.1.0.3.nupkg.sha512",
+    "C:\\Users\\AvalonTM\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.23\\microsoft.netcore.app.host.win-x64.3.1.23.nupkg.sha512"
   ],
   "logs": [
     {
