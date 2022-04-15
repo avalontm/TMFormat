@@ -108,11 +108,11 @@ namespace TMFormat.Formats
             }
         }
 
-        public static List<TMItem> Load(string filename)
+        public static List<TMItem> Load(string filename, bool UseMonoGame = false)
         {
             byte[] readBytes = new byte[0];
 
-            if (!TMInstance.UseMonoGame)
+            if (!UseMonoGame)
             {
                 if (!File.Exists(filename))
                 {

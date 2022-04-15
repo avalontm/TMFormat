@@ -35,9 +35,12 @@ namespace TMFormat.Enums
 
     public enum TypeField
     {
-        None = 0,
-        Fire,
+        None,
+        Stay,
         Teleport,
+        Fire,
+        Poison,
+        Electricity,
     }
 
     public struct TilePlayer
