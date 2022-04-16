@@ -23,7 +23,7 @@ namespace TMFormat
         public static bool UseTextures { get; private set; }
         public static GraphicsDevice GraphicsDevice { get; set; }
         public static MapManager Map { get; private set; }
-
+        public static bool DesktopMode { get; private set; }
         public static void Init(bool useMonoGame = false, bool useTextures = false)
         {
             UseMonoGame = useMonoGame;
@@ -37,10 +37,10 @@ namespace TMFormat
             UseTextures = useTextures;
         }
 
-        public static bool InitGame(GraphicsDevice device, ContentManager content, string fileMap)
+        public static bool InitGame(GraphicsDevice device, ContentManager content, bool desktopMode = false)
         {
             GraphicsDevice = device;
-
+            DesktopMode = desktopMode;
             Content = content;
             UseMonoGame = true;
             UseTextures = true;

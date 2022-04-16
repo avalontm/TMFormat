@@ -92,8 +92,13 @@ namespace TMFormat.Formats
 
             try
             {
-                if (!TMInstance.UseMonoGame)
+                if (!TMInstance.UseMonoGame || TMInstance.DesktopMode)
                 {
+                    if (TMInstance.DesktopMode)
+                    {
+                        filename = $"{TMInstance.Content.RootDirectory}/{filename}.tmc";
+                    }
+
                     if (!File.Exists(filename))
                     {
                         Console.WriteLine($"[CreatureBase] NotFound! => {filename}");
