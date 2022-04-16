@@ -4,6 +4,12 @@ using System.Text;
 
 namespace TMFormat.Framework.Enums
 {
+    public enum PlayerSex
+    {
+        Female,
+        Male
+    }
+
     public enum PlayerDir
     {
         North,

@@ -5,10 +5,16 @@ using System.Text;
 
 namespace TMFormat.Framework.Resolution
 {
-	public class ResolutionComponent : DrawableGameComponent, IResolution
+	public class ResolutionComponent :
+#if !BRIDGE
+		DrawableGameComponent,
+#else
+		GameComponent,
+#endif
+		IResolution
 	{
 		#region Fields
-		public static ResolutionComponent Instance { private set; get; }
+
 		private Point _virtualResolution;
 
 		private Point _screenResolution;
@@ -57,11 +63,10 @@ namespace TMFormat.Framework.Resolution
 			}
 			set
 			{
-				/*
-				if (null != ResolutionManagerAdapter)
+				if (null != ResolutionAdapter)
 				{
-					throw new Exception("Can't change VirtualResolutionManager after the ResolutionManagerComponent has been initialized");
-				}*/
+					throw new Exception("Can't change VirtualResolution after the ResolutionComponent has been initialized");
+				}
 				_virtualResolution = value;
 			}
 		}
@@ -73,12 +78,12 @@ namespace TMFormat.Framework.Resolution
 				return _screenResolution;
 			}
 			set
-			{/*
-				if (null != ResolutionManagerAdapter)
+			{
+				if (null != ResolutionAdapter)
 				{
-					throw new Exception("Can't change ScreenResolutionManager after the ResolutionManagerComponent has been initialized");
-				}*/
-				_screenResolution= value;
+					throw new Exception("Can't change ScreenResolution after the ResolutionComponent has been initialized");
+				}
+				_screenResolution = value;
 			}
 		}
 
@@ -92,9 +97,26 @@ namespace TMFormat.Framework.Resolution
 			{
 				if (null != ResolutionAdapter)
 				{
-					throw new Exception("Can't change FullScreen after the ResolutionManagerComponent has been initialized");
+					throw new Exception("Can't change FullScreen after the ResolutionComponent has been initialized");
 				}
 				_fullscreen = value;
+			}
+		}
+
+		bool? _useDeviceResolution;
+		public bool? UseDeviceResolution
+		{
+			get
+			{
+				return _useDeviceResolution;
+			}
+			set
+			{
+				if (null != ResolutionAdapter)
+				{
+					throw new Exception("Can't change UseDeviceResolution after the ResolutionComponent has been initialized");
+				}
+				_useDeviceResolution = value;
 			}
 		}
 
@@ -108,7 +130,7 @@ namespace TMFormat.Framework.Resolution
 			{
 				if (null != ResolutionAdapter)
 				{
-					throw new Exception("Can't change LetterBox after the ResolutionManagerComponent has been initialized");
+					throw new Exception("Can't change LetterBox after the ResolutionComponent has been initialized");
 				}
 				_letterbox = value;
 			}
@@ -119,22 +141,22 @@ namespace TMFormat.Framework.Resolution
 		#region Methods
 
 		/// <summary>
-		/// Create the ResolutionManager component!
+		/// Create the resolution component!
 		/// </summary>
 		/// <param name="game"></param>
 		/// <param name="graphics"></param>
-		/// <param name="virtualResolutionManager">The dimensions of the desired virtual ResolutionManager</param>
-		/// <param name="screenResolutionManager">The desired screen dimensions</param>
-		/// <param name="fullscreen">Whether or not to fullscreen the game (Always true on android & ios)</param>
-		/// <param name="letterbox">Whether to add letterboxing, or change the virtual resoltuion to match aspect ratio of screen ResolutionManager.</param>
-		public ResolutionComponent(Game game, GraphicsDeviceManager graphics, Point virtualResolutionManager, Point screenResolutionManager, bool fullscreen, bool letterbox) : base(game)
+		/// <param name="virtualResolution">The dimensions of the desired virtual resolution</param>
+		/// <param name="screenResolution">The desired screen dimensions</param>
+		/// <param name="fullscreen">Whether or not to fullscreen the game</param>
+		/// <param name="letterbox">Whether to add letterboxing, or change the virtual resoltuion to match aspect ratio of screen resolution.</param>
+		public ResolutionComponent(Game game, GraphicsDeviceManager graphics, Point virtualResolution, Point screenResolution, bool fullscreen, bool letterbox, bool? useDeviceResolution) : base(game)
 		{
-			Instance = this;
 			_graphics = graphics;
-			VirtualResolution = virtualResolutionManager;
-			ScreenResolution = screenResolutionManager;
+			VirtualResolution = virtualResolution;
+			ScreenResolution = screenResolution;
 			_fullscreen = fullscreen;
 			_letterbox = letterbox;
+			_useDeviceResolution = useDeviceResolution;
 
 			//Add to the game components
 			Game.Components.Add(this);
@@ -146,18 +168,14 @@ namespace TMFormat.Framework.Resolution
 		public override void Initialize()
 		{
 			base.Initialize();
-			Init();
-		}
 
-		public void Init()
-		{
-			//initialize the ResolutionManagerAdapter object
+			//initialize the ResolutionAdapter object
 			ResolutionAdapter = new ResolutionAdapter(_graphics);
 			ResolutionAdapter.SetVirtualResolution(VirtualResolution.X, VirtualResolution.Y);
-			ResolutionAdapter.SetScreenResolution(ScreenResolution.X, ScreenResolution.Y, _fullscreen, _letterbox);
+			ResolutionAdapter.SetScreenResolution(ScreenResolution.X, ScreenResolution.Y, _fullscreen, _letterbox, _useDeviceResolution);
 			ResolutionAdapter.ResetViewport();
 
-			//initialize the ResolutionManager singleton
+			//initialize the Resolution singleton
 			ResolutionManager.Init(ResolutionAdapter);
 		}
 
@@ -171,6 +189,8 @@ namespace TMFormat.Framework.Resolution
 			return ResolutionAdapter.TransformationMatrix();
 		}
 
+		//If running this in a Bridge project, will need to manually call ResolutionAdapter.ResetViewport() in Game.Draw()
+#if !BRIDGE
 		public override void Draw(GameTime gameTime)
 		{
 			//Calculate Proper Viewport according to Aspect Ratio
@@ -178,6 +198,7 @@ namespace TMFormat.Framework.Resolution
 
 			base.Draw(gameTime);
 		}
+#endif
 
 		public void ResetViewport()
 		{

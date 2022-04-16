@@ -6,6 +6,9 @@ using System.Text;
 
 namespace TMFormat.Framework.Resolution
 {
+	/// <summary>
+	/// Singleton for easy access to various resolution items
+	/// </summary>
 	public static class ResolutionManager
 	{
 		#region Properties
@@ -39,7 +42,6 @@ namespace TMFormat.Framework.Resolution
 		public static void Init(IResolution resolution)
 		{
 			_resolution = resolution;
-			Debug.WriteLine($"[IResolution] {resolution}");
 		}
 
 		#endregion Initialization
@@ -71,5 +73,4 @@ namespace TMFormat.Framework.Resolution
 
 		#endregion //Methods
 	}
-
 }

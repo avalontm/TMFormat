@@ -46,6 +46,8 @@ namespace TMFormat.Framework.Resolution
 		/// </summary>
 		private bool _fullScreen;
 
+		private bool _useDeviceResolution;
+
 		/// <summary>
 		/// whether or not the matrix needs to be recreated
 		/// </summary>
@@ -127,7 +129,7 @@ namespace TMFormat.Framework.Resolution
 			}
 			set
 			{
-				SetScreenResolution(value.X, value.Y, _fullScreen, _letterBox);
+				SetScreenResolution(value.X, value.Y, _fullScreen, _letterBox, _useDeviceResolution);
 			}
 		}
 
@@ -164,7 +166,7 @@ namespace TMFormat.Framework.Resolution
 		{
 			_virtualResolution = new Point(Width, Height);
 
-			_screenArea = new Rectangle(0, 0, _virtualResolution.X, _virtualResolution.Y);
+			_screenArea = new Rectangle(-80, -80, _virtualResolution.X, _virtualResolution.Y);
 
 			//set up the title safe area
 			_titleSafeArea.X = (int)(_virtualResolution.X / 20.0f);
@@ -178,21 +180,17 @@ namespace TMFormat.Framework.Resolution
 		/// <summary>
 		/// Sets the screen we are going to use for the screen
 		/// </summary>
-		/// <param name="Width">Width.</param>
-		/// <param name="Height">Height.</param>
-		/// <param name="FullScreen">If set to <c>true</c> full screen.</param>
-		public void SetScreenResolution(int Width, int Height, bool FullScreen, bool letterbox)
+		/// <param name="width">Width.</param>
+		/// <param name="height">Height.</param>
+		/// <param name="fullScreen">If set to <c>true</c> full screen.</param>
+		public void SetScreenResolution(int width, int height, bool fullScreen, bool letterbox, bool? useDeviceResolution)
 		{
-			_screenResolution.X = Width;
-			_screenResolution.Y = Height;
+			_screenResolution.X = width;
+			_screenResolution.Y = height;
 			_letterBox = letterbox;
+			_useDeviceResolution = useDeviceResolution.HasValue ? useDeviceResolution.Value : fullScreen;
 
-#if ANDROID || OUYA || __IOS__
-			//Android is always fullscreen
-			_fullScreen = true;
-#else
-			_fullScreen = FullScreen;
-#endif
+			_fullScreen = fullScreen;
 
 			ApplyResolutionSettings();
 		}
@@ -201,7 +199,7 @@ namespace TMFormat.Framework.Resolution
 		{
 			// If we aren't using a full screen mode, the height and width of the window can
 			// be set to anything equal to or smaller than the actual screen size.
-			if (!_fullScreen)
+			if (!_fullScreen && !_useDeviceResolution)
 			{
 				//Make sure the width isn't bigger than the screen
 				if (_screenResolution.X > GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width)
@@ -304,12 +302,18 @@ namespace TMFormat.Framework.Resolution
 		protected virtual void RecreateScaleMatrix(Point vp)
 		{
 			_dirtyMatrix = false;
-			_scaleMatrix = Matrix.CreateScale(((float)vp.X / (float)_virtualResolution.X), ((float)vp.Y / (float)_virtualResolution.Y), 1.0f);
+			_scaleMatrix = Matrix.CreateScale(
+				((float)vp.X / (float)_virtualResolution.X),
+				((float)vp.Y / (float)_virtualResolution.Y),
+				1.0f);
 
 			//trasnlate by the pillar box to account for the border on top/bottom/left/right
 			var translation = Matrix.CreateTranslation(_pillarBox.X, _pillarBox.Y, 0f);
 
-			_screenMatrix = Matrix.Multiply(translation, Matrix.CreateScale(((float)_virtualResolution.X / (float)vp.X), ((float)_virtualResolution.Y / (float)vp.Y), 1.0f));
+			_screenMatrix = Matrix.Multiply(translation, Matrix.CreateScale(
+				((float)_virtualResolution.X / (float)vp.X),
+				((float)_virtualResolution.Y / (float)vp.Y),
+				1.0f));
 		}
 
 		public void ResetViewport()

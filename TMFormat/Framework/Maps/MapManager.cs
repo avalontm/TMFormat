@@ -7,6 +7,8 @@ using System.Text;
 using TMFormat.Enums;
 using TMFormat.Formats;
 using TMFormat.Framework.Creatures;
+using TMFormat.Framework.Effects;
+using TMFormat.Framework.Enums;
 using TMFormat.Framework.Extentions;
 using TMFormat.Framework.Loaders;
 using TMFormat.Framework.Maps.Actions;
@@ -19,6 +21,7 @@ namespace TMFormat.Framework.Maps
     {
         public List<ICreature> players { private set; get; }
         public ICreature player { private set; get; }
+        public List<IEffect> effects { private set; get; }
 
         public TMBaseMap MapBase { private set; get; }
         public MapTile mapTile { private set; get; }
@@ -55,8 +58,8 @@ namespace TMFormat.Framework.Maps
             _spriteBatch = new SpriteBatch(_graphicsDevice);
             mapTile = new MapTile(this, _spriteBatch);
             camera = new Camera(this);
+            effects = new List<IEffect>();
             players = new List<ICreature>();
-            player = new ICreature(0, "Player", 1, 0, 0.35f, 100, 100, 35, 35, new VectorInt3(500,500,7), 0 , 128,0,0,0,0, true, true);
             //Initialize render targets
             var pp = _graphicsDevice.PresentationParameters;
             LightsTarget = new RenderTarget2D(_graphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
@@ -65,9 +68,30 @@ namespace TMFormat.Framework.Maps
             MapBase = new TMBaseMap(items);
         }
 
+        public void onPlayerSpawn(PlayerSex sex  = PlayerSex.Male)
+        {
+            int look = 128;
+
+            switch (sex)
+            {
+                case PlayerSex.Female:
+                    look = 128;
+                    break;
+                case PlayerSex.Male:
+                    look = 128;
+                    break;
+            }
+            player = new ICreature(0, "Player", 1, 0, 0.15f, 100, 100, 35, 35, new VectorInt3(500, 500, 7), 0, look, 78, 69, 58, 76, true, true);
+        }
+
         public void Update(GameTime gameTime)
         {
-            onCameraScreens();
+            if (player == null)
+            {
+                return;
+            }
+
+            onCameraScreen();
 
             onEffects(gameTime);
             onTileAnimate(gameTime);
@@ -98,7 +122,7 @@ namespace TMFormat.Framework.Maps
             */
         }
 
-        void onCameraScreens()
+        void onCameraScreen()
         {
             var screen = camera.onCameraScreen();
             ScreenX = screen.X;
@@ -135,13 +159,11 @@ namespace TMFormat.Framework.Maps
 
         void onEffects(GameTime gameTime)
         {
-            /*
             for (var i = 0; i < effects.Count; i++)
             {
                 var effect = effects[i];
                 effect.Update(gameTime);
             }
-            */
         }
 
         void onTileAnimate(GameTime gameTime)
@@ -206,11 +228,6 @@ namespace TMFormat.Framework.Maps
 
         void onCheckHiddenFloors()
         {
-            if (player == null)
-            {
-                return;
-            }
-
             int start = 4;
             int Floor = FloorDefault;
 
@@ -322,6 +339,11 @@ namespace TMFormat.Framework.Maps
 
         public void Draw(GameTime gameTime) // Floor Current
         {
+            if (player == null)
+            {
+                return;
+            }
+
             onDrawLights(); // Layer de luces
             onDrawMapTiles(); // Layer de Mapa
             onDrawCombine(); // Combinamos los layers anteriores
@@ -364,6 +386,11 @@ namespace TMFormat.Framework.Maps
 
         void onDrawLights()
         {
+            if (player == null)
+            {
+                return;
+            }
+
             int floor_current = player.pos_z;
 
             _graphicsDevice.SetRenderTarget(LightsTarget);
@@ -376,8 +403,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X) - (Textures.LightMask.Width / 2) + (TMBaseMap.TileSize / 2);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y) - (Textures.LightMask.Height / 2) + (TMBaseMap.TileSize / 2);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X) - (Textures.LightMask.Width / 2) + (TMBaseMap.TileSize / 2);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y) - (Textures.LightMask.Height / 2) + (TMBaseMap.TileSize / 2);
 
                     if (MapBase.Floors[floor_current][x, y].item != null)
                     {
@@ -425,7 +452,7 @@ namespace TMFormat.Framework.Maps
 
         void onEffectsDraw(SpriteBatch spriteBatch)
         {
-            /*
+            
             for (var i = 0; i < effects.Count; i++)
             {
                 var effect = effects[i];
@@ -434,7 +461,7 @@ namespace TMFormat.Framework.Maps
                     effect.Draw(spriteBatch);
                 }
             }
-            */
+            
         }
 
         void onDrawFloorCurrent()
@@ -447,8 +474,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor_current][x, y].item != null)
                     {
@@ -502,8 +529,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor_current][x, y].item != null)
                     {
@@ -574,8 +601,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth - tileOffset; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor][x, y].item != null)
                     {
@@ -627,8 +654,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor][x, y].item != null)
                     {
@@ -688,8 +715,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX + tileOffset; x <= ScreenWidth + tileOffset; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor][x, y].item != null)
                     {
@@ -741,8 +768,8 @@ namespace TMFormat.Framework.Maps
                 for (int x = ScreenX; x <= ScreenWidth; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Screen.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Screen.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.X);
+                    float tmpY = ((y * TMBaseMap.TileSize) - TMInstance.Map.camera.Screen.Y);
 
                     if (MapBase.Floors[floor][x, y].item != null)
                     {

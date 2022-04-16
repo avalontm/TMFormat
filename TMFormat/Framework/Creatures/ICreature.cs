@@ -16,6 +16,7 @@ using TMFormat.Framework.Extentions;
 using TMFormat.Framework.Outfits;
 using TMFormat.Framework.Enums;
 using TMFormat.Framework.Loaders;
+using TMFormat.Framework.Effects;
 
 namespace TMFormat.Framework.Creatures
 {
@@ -169,11 +170,11 @@ namespace TMFormat.Framework.Creatures
 
             if (isMe)
             {
-                position = Camera.Center;
+                position = TMInstance.Map.camera.Center;
             }
             else
             {
-                position = new Vector2((offset.X - Camera.Screen.X), (offset.Y - Camera.Screen.Y));
+                position = new Vector2((offset.X - TMInstance.Map.camera.Screen.X), (offset.Y - TMInstance.Map.camera.Screen.Y));
             }
 
             if (!is_dead)
@@ -189,8 +190,8 @@ namespace TMFormat.Framework.Creatures
 
                 if (isMe)
                 {
-                    Camera.Screen.X = ((int)offset.X - (int)Camera.Center.X);
-                    Camera.Screen.Y = ((int)offset.Y - (int)Camera.Center.Y);
+                    TMInstance.Map.camera.Screen.X = ((int)offset.X - (int)TMInstance.Map.camera.Center.X);
+                    TMInstance.Map.camera.Screen.Y = ((int)offset.Y - (int)TMInstance.Map.camera.Center.Y);
                 }
 
                 var pos1 = new Vector2((position.X - OffsetFloor.X + offsetFloor.X), (position.Y - OffsetFloor.Y + offsetFloor.Y));
@@ -250,8 +251,8 @@ namespace TMFormat.Framework.Creatures
 
         void onSpawnEffect()
         {
-            //Effects.Effect effect = new Effects.Effect("Teleport", new VectorInt3(pos_x, pos_y, pos_z));
-           // GameManager.effects.Add(effect);
+            TMEffect effect = new TMEffect("Teleport", new VectorInt3(pos_x, pos_y, pos_z));
+            TMInstance.Map.effects.Add(effect);
         }
 
         public void onDead()
@@ -714,8 +715,8 @@ namespace TMFormat.Framework.Creatures
 
             if (isMe)
             {
-                Camera.Screen.X = (int)(offset.X - Camera.Center.X);
-                Camera.Screen.Y = (int)(offset.Y - Camera.Center.Y);
+                TMInstance.Map.camera.Screen.X = (int)(offset.X - TMInstance.Map.camera.Center.X);
+                TMInstance.Map.camera.Screen.Y = (int)(offset.Y - TMInstance.Map.camera.Center.Y);
             }
         }
 

@@ -9,8 +9,8 @@ namespace TMFormat.Framework.Maps
     public class Camera
     {
         Vector2 rect = new Vector2(9, 7);
-        public static Rectangle Screen;
-        public static Vector2 Center = Vector2.Zero;
+        public Rectangle Screen;
+        public Vector2 Center = Vector2.Zero;
         MapManager map;
 
         public Camera(MapManager map)
@@ -27,11 +27,11 @@ namespace TMFormat.Framework.Maps
                 return new Rectangle();
             }
 
-            int ScreenX = ((int)map.player.pos_x - Camera.Screen.Width);
-            int ScreenY = ((int)map.player.pos_y - Camera.Screen.Height);
+            int ScreenX = ((int)map.player.pos_x - Screen.Width);
+            int ScreenY = ((int)map.player.pos_y - Screen.Height);
 
-            int ScreenWidth = ((int)map.player.pos_x + Camera.Screen.Width);
-            int ScreenHeight = ((int)map.player.pos_y + Camera.Screen.Height);
+            int ScreenWidth = ((int)map.player.pos_x + Screen.Width);
+            int ScreenHeight = ((int)map.player.pos_y + Screen.Height);
 
             if (ScreenX < 0)
             {
