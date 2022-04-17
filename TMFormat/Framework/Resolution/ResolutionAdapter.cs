@@ -133,6 +133,19 @@ namespace TMFormat.Framework.Resolution
 			}
 		}
 
+		Point _gameScreen;
+		public Point GameScreen
+		{
+			get
+			{
+				return _gameScreen;
+			}
+			set
+			{
+				_gameScreen = value;
+			}
+		}
+
 		#endregion //Properties
 
 		#region Methods
@@ -144,6 +157,7 @@ namespace TMFormat.Framework.Resolution
 		/// </summary>
 		public ResolutionAdapter()
 		{
+			GameScreen = new Point();
 		}
 
 		/// <summary>
@@ -158,6 +172,17 @@ namespace TMFormat.Framework.Resolution
 		}
 
 		/// <summary>
+		/// Resize
+		/// </summary>
+		/// <param name="Width"></param>
+		/// <param name="Height"></param>
+		public void Resize(int Width, int Height)
+		{
+			GameScreen = new Point(Width - (_virtualResolution.X- (int)(_virtualResolution.X / 1.5f)), Height - (int)(_virtualResolution.Y / 1.25f));
+			SetVirtualResolution(_virtualResolution.X, _virtualResolution.Y);
+		}
+
+		/// <summary>
 		/// The the resolution our game is designed to run in.
 		/// </summary>
 		/// <param name="Width">Width.</param>
@@ -165,8 +190,7 @@ namespace TMFormat.Framework.Resolution
 		public void SetVirtualResolution(int Width, int Height)
 		{
 			_virtualResolution = new Point(Width, Height);
-
-			_screenArea = new Rectangle(-80, -80, _virtualResolution.X, _virtualResolution.Y);
+			_screenArea = new Rectangle(-(int)(_virtualResolution.X / 2.5f), -(int)(_virtualResolution.Y / 5.0f), _virtualResolution.X + GameScreen.X, _virtualResolution.Y+ GameScreen.Y);
 
 			//set up the title safe area
 			_titleSafeArea.X = (int)(_virtualResolution.X / 20.0f);
@@ -355,6 +379,6 @@ namespace TMFormat.Framework.Resolution
 			}
 		}
 
-		#endregion //Methods
-	}
+        #endregion //Methods
+    }
 }

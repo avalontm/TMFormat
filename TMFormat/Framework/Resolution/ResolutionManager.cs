@@ -70,7 +70,10 @@ namespace TMFormat.Framework.Resolution
 		{
 			_resolution.ResetViewport();
 		}
-
+		public static void Resize(int Width, int Height)
+		{
+			_resolution.Resize(Width, Height);
+		}
 		#endregion //Methods
 	}
 }

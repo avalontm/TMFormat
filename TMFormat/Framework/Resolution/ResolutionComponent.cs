@@ -206,6 +206,11 @@ namespace TMFormat.Framework.Resolution
 			ResolutionAdapter.ResetViewport();
 		}
 
-		#endregion //Methods
-	}
+        public void Resize(int Width, int Height)
+        {
+			ResolutionAdapter.Resize(Width, Height);
+		}
+
+        #endregion //Methods
+    }
 }

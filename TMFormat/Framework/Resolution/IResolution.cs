@@ -40,5 +40,6 @@ namespace TMFormat.Framework.Resolution
 		Vector2 ScreenToGameCoord(Vector2 screenCoord);
 
 		void ResetViewport();
+		void Resize(int Width, int Height);
 	}
 }

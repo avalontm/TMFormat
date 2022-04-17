@@ -11,6 +11,7 @@ namespace TMFormat.Framework.Loaders
 
         public static void Init()
         {
+
             FontDefault = TMInstance.Content.Load<SpriteFont>("defaultFont");
         }
 
