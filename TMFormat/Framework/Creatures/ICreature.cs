@@ -29,6 +29,7 @@ namespace TMFormat.Framework.Creatures
         public List<TMDir> dirs;
 
         //Propiedades Publicas
+        public CreatureType type { set; get; }
         public long id { set; get; }
         public string name { set; get; }
         public int vocation { set; get; }
@@ -108,7 +109,10 @@ namespace TMFormat.Framework.Creatures
         public ICreature(long id, string name, int level, int experience, double speed, int health_current, int health_max, int mana_current, int mana_max, VectorInt3 position, int dir, int look, int head, int body, int legs, int feet, bool isRespawn, bool isMe = false)
         {
             this.isMe = isMe;
-
+            if (this.isMe)
+            {
+                type = CreatureType.PLAYER;
+            }
             this.id = id;
             this.name = name;
             this.direction = dir;
@@ -301,9 +305,14 @@ namespace TMFormat.Framework.Creatures
             {
                 foreach (var item in items)
                 {
-                    if (item.Type == (int)TypeItem.Field)
+                    switch ((TypeItem)item.Type)
                     {
-                        this.onFieldStay(pos_x, pos_y, pos_z, item);
+                        case TypeItem.Field:
+                            this.onFieldStay(pos_x, pos_y, pos_z, item);
+                            break;
+                        case TypeItem.Stair:
+                            this.onStair();
+                            break;
                     }
                 }
             }

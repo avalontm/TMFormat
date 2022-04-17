@@ -18,6 +18,13 @@ namespace TMFormat.Framework.Enums
         West,
         Center,
     }
+    public enum CreatureType
+    {
+        CREATURE = 0,
+        NPC,
+        PLAYER,
+        GAMEMASTER,
+    }
 
     public enum PlayerStatus
     {
@@ -31,5 +38,27 @@ namespace TMFormat.Framework.Enums
         Body,
         Legs,
         Feets,
+    }
+
+    public enum ItemType
+    {
+        Tile = 0,
+        Border,
+        Field,
+        Item,
+        Tree,
+        Wall,
+        Stair,
+        Door,
+    }
+
+    public enum ItemField
+    {
+        None,
+        Stay,
+        Teleport,
+        Fire,
+        Poison,
+        Electricity,
     }
 }

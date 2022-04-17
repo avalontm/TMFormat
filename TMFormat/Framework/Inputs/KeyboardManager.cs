@@ -9,11 +9,25 @@ namespace TMFormat.Framework.Inputs
 {
     public static class KeyboardManager
     {
-        public static KeyboardState KeyState { private set; get; }
+        static KeyboardState currentKeyState;
+        static KeyboardState previousKeyState;
 
-        public static void Update(GameTime gameTime)
+ 
+        public static bool IsKeyDown(Keys key)
         {
-            KeyState = Keyboard.GetState();
+            currentKeyState = Keyboard.GetState();
+            return currentKeyState.IsKeyDown(key);
+        }
+
+        public static bool IsKeyUP(Keys key)
+        {
+            previousKeyState = Keyboard.GetState();
+            return previousKeyState.IsKeyUp(key);
+        }
+
+        public static bool IsKeyPressed(Keys key)
+        {
+            return (IsKeyDown(key) && !IsKeyUP(key));
         }
 
         public static void Move(PlayerDir dir)
