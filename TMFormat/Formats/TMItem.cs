@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -125,6 +126,7 @@ namespace TMFormat.Formats
             {
                 readBytes = TMInstance.Content.Load<byte[]>(filename);
             }
+
 
             return Read(readBytes);
 
