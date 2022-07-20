@@ -57,6 +57,11 @@ namespace TMFormat.Helpers
         {
             List<TMSprite> sprites = new List<TMSprite>();
 
+            if (items == null)
+            {
+                return sprites;
+            }
+
             foreach (var item in items)
             {
                 TMSprite spr = new TMSprite();
